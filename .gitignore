@@ -7,6 +7,9 @@ package-lock.json
 logs/
 *.log
 
+# Docs
+docs/
+
 # IDE Files
 .tmp/
 .idea/
