@@ -30,8 +30,13 @@ exports.DefaultOptions = {
 };
 
 exports.Events = {
+	WARN: 'warn',
+	DEBUG: 'debug',
+
 	READY: 'ready',
+	CHALLSTR: 'challstr',
 	DISCONNECT: 'disconnect',
+	RAW: 'raw',
 	ROOM_INIT: 'roomInit',
 	ROOM_DEINIT: 'roomDeinit',
 	MESSAGE_SEND: 'message',

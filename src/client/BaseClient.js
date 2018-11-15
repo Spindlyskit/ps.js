@@ -1,6 +1,5 @@
 require('setimmediate');
 const EventEmitter = require('events');
-const SocketHandler = require('../ws/SocketHandler');
 const { DefaultOptions } = require('../util/Static');
 
 /**
@@ -37,13 +36,6 @@ class BaseClient extends EventEmitter {
           * @type {ClientOptions}
           */
 		this.options = Object.assign(DefaultOptions, options);
-
-		/**
-          * The client's socket handler
-          * @type {SocketHandler}
-          * @private
-          */
-		this.ws = new SocketHandler(this);
 	}
 
 	/**

@@ -1,7 +1,4 @@
-/**
- * Used for handling websocket events
- * @private
- */
+// Used for handling websocket events
 class Action {
 	constructor(client) {
 		this.client = client;
