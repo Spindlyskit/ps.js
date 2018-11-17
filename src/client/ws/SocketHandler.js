@@ -37,12 +37,7 @@ class SocketHandler {
 	 */
 	open() {
 		this.active = true;
-		/**
-		 * Emitted when the sockets successfully connect.
-		 * @event Client#ready
-		 * @param {string} info The debug information
-		 */
-		this.client.emit(Events.READY);
+		this.client.onReady();
 	}
 
 	/**

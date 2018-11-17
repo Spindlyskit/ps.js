@@ -1,10 +1,12 @@
+const UserStore = require('../datastores/UserStore');
+
 /**
  * Represents any room on showdown
  */
 class Room {
 	constructor(client, data) {
 		/**
-		 * The client that instantiated this DataStore
+		 * The client that instantiated this room
 		 * @type {Client}
 		 * @readonly
 		 */
@@ -18,27 +20,38 @@ class Room {
 		this.id = data.id;
 
 		/**
-		 * The name of the room
-		 * @type {string}
+		 * The name of the room. Null for some uninitialised rooms.
+		 * @type {?string}
 		 */
 		this.name = data.name;
+
+		/**
+		 * The description of the room. Only on public chat rooms.
+		 * @type {?string}
+		 */
+		this.description = data.description;
 
 		/**
 		 * Whether the client is in the room
 		 * @type {boolean}
 		 */
-		this.joined = false;
+		this.initialized = false;
 
 		/**
 		 * The type of the room, either:
 		 * * `chat` - a normal chat room
 		 * * `battle` - a game room
-		 * * `dm` - a dm with a user
-		 * * `global` - the global room
 		 * * `unknown` - could be any type
 		 * @type {string}
 		 */
 		this.type = data.type ? data.type : 'unknown';
+
+		/**
+		 * All users in the room.
+		 * @type {?UserStore<string, User>}
+		 * @private
+		 */
+		this._usersCache = null;
 	}
 
 	/**
@@ -46,6 +59,7 @@ class Room {
 	 * @param {string} message The text to send
 	 */
 	send(message) {
+		if (!this.initialized) this.client.emit('warn', `Cannot message ${this.id} - not in room`);
 		this.ws.send(`${this.id}|${message}`);
 	}
 
@@ -53,7 +67,7 @@ class Room {
 	 * Leave the room
 	 */
 	join() {
-		if (this.joined) this.client.emit('warn', `Cannot join room ${this.id} - already in room`);
+		if (this.initialized) this.client.emit('warn', `Cannot join room ${this.id} - already in room`);
 		this.client.sendToGlobal(`/join ${this.id}`);
 	}
 
@@ -61,18 +75,19 @@ class Room {
 	 * Leave the room
 	 */
 	leave() {
-		if (!this.joined) this.client.emit('warn', `Cannot leave room ${this.id} - not in room`);
-		if (this.isGlobalRoom) this.client.emit('warn', 'Global room cannot be left');
+		if (!this.initialized) this.client.emit('warn', `Cannot leave room ${this.id} - not in room`);
 		this.client.sendToGlobal(`/leave ${this.id}`);
 	}
 
-	/**
-	 * Whether this room is the global room
-	 * @type {boolean}
-	 * @readonly
-	 */
-	get isGlobalRoom() {
-		return this.type === 'global';
+	init(type) {
+		this.type = type;
+		this.initialized = true;
+	}
+
+	get users() {
+		if (this._usersCache) return this._usersCache;
+		this._usersCache = new UserStore(this.client, this.client.users.filter(e => e.isInRoom(this)));
+		return this._usersCache;
 	}
 
 	/**

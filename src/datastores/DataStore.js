@@ -8,9 +8,10 @@ class DataStore extends Collection {
 	/**
 	 * @param {Client} client The client that instantiated this DataStore
 	 * @param {*} store The type of object the store holds
+	 * @param {*} [iterable=null] The iterable to base this store off.
 	 */
-	constructor(client, store) {
-		super();
+	constructor(client, store, iterable = null) {
+		super(iterable);
 
 		/**
 		 * The client that instantiated this DataStore
