@@ -16,7 +16,7 @@ class ActionChallstr extends Action {
 		this.removeMessageName();
 		const challstr = this.data.slice(1);
 		this.client.challstr = challstr;
-		this.client.emit(Events.CHALLSTR, challstr);
+		this.resolve(Events.CHALLSTR, { challstr });
 	}
 
 	static isRoomless() {

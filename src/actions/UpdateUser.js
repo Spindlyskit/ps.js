@@ -39,20 +39,27 @@ class ActionUpdateUser extends Action {
 		this.client.user = user;
 		this.client.loggedIn = loggedIn;
 
-		this.client.emit(Events.CLIENT_USERNAME_CHANGE, user, loggedIn);
+		this.resolve(Events.CLIENT_USERNAME_CHANGE, { user, loggedIn });
 	}
 
 	_updateAvatar(avatar) {
 		this.client.user.avatar = avatar;
 
-		this.client.emit(Events.CLIENT_AVATAR_CHANGE, avatar);
+		this.resolve(Events.CLIENT_AVATAR_CHANGE, { avatar });
 	}
 }
 
 module.exports = ActionUpdateUser;
 
 /**
- * Emitted when the challstr becomes available.
- * @event Client#challstr
- * @param {string} challstr The challstr.
+ * Emitted when the client username is changed.
+ * @event Client#clientUsernameChange
+ * @param {User} user The new client user.
+ * @param {boolean} loggedIn Whether the client is logged in.
+ */
+
+/**
+ * Emitted when the client avatar is changed.
+ * @event Client#clientAvatarChange
+ * @param {string} avatar The new avatar id.
  */

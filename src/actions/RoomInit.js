@@ -14,9 +14,10 @@ class ActionRoomInit extends Action {
 
 	run() {
 		this.removeMessageName();
+		const room = this.room;
 		const roomType = this.data.slice(1);
-		this.room.init(roomType);
-		this.client.emit(Events.ROOM_INIT, this.room, roomType);
+		room.init(roomType);
+		this.resolve(Events.ROOM_INIT, { room, roomType });
 	}
 }
 

@@ -41,7 +41,7 @@ class MessageHandler {
 		else room = this.client.rooms.lobby;
 
 		for (const act of actions) {
-			if (!act.startsWith('|')) {
+			if (!act.startsWith('|') || act.startsWith('||')) {
 				this.client.emit(Events.ROOM_LOG_TEXT, room, act);
 			} else {
 				const action = this.parseAct(act, room);
@@ -84,7 +84,8 @@ class MessageHandler {
 	}
 
 	/**
-	 * Returns a promise that resolves when actions matching the criteria are received
+	 * Returns a promise that resolves when actions matching the criteria are received.
+	 * Actions may not be resolved when collected.
 	 * @param {ActionAwaitOptions} options The options for the query
 	 * @returns {Promise<Action[]>}
 	 */

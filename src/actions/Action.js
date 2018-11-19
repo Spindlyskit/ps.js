@@ -29,6 +29,18 @@ class Action {
 		 * @type {string}
 		 */
 		this.name = name;
+
+		/**
+		 * @typedef {Object} ActionResult
+		 * @property {string} event The name of the event that was emitted.
+		 * @property {Object} args The arguments the event ran with. Mapped by arg name.
+		 */
+
+		/**
+		 * The results of the action if it has completed.
+		 * @type {ActionResult[]}
+		 */
+		this.results = [];
 	}
 
 	/**
@@ -62,6 +74,19 @@ class Action {
 	 */
 	static get isRoomless() {
 		return false;
+	}
+
+	/**
+	 * Resolve the action.
+	 * @param {string} event The name of the event.
+	 * @param {Object} args The event arguments.
+	 */
+	resolve(event, args) {
+		this.client.emit(event, ...Object.values(args));
+		this.results.push({
+			event,
+			args,
+		});
 	}
 }
 

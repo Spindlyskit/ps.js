@@ -25,7 +25,7 @@ class ActionRoomUserList extends Action {
 			user.addRoom(this.room.id);
 			this.client.users.set(user.id, user);
 		}
-		this.client.emit(Events.ROOM_USER_UPDATE, this.room, this.room.users);
+		this.resolve(Events.ROOM_USER_UPDATE, { room: this.room, users: this.room.users });
 	}
 }
 
