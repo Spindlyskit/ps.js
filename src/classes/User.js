@@ -84,6 +84,10 @@ class User {
 		return this._rooms.has(room);
 	}
 
+	/**
+	 * All rooms the user is in
+	 * @returns {?RoomStore}
+	 */
 	get rooms() {
 		if (this._roomCache) return this._roomCache;
 		this._roomCache = new RoomStore(this.client, this.client.rooms.filter(e => this._rooms.has(e.id)));

@@ -3,18 +3,17 @@ const { Events } = require('../util/Static');
 const { toId } = require('../util');
 const User = require('../classes/User');
 
-/**
- * Action for the update user message.
- * @extends {Action}
- */
 class ActionUpdateUser extends Action {
+	/**
+	 * @hideconstructor
+	 * @param {Client} client The client that instantiated this action.
+	 * @param {string} data The data from the server.
+	 * @param {?Room} room The room the action was performed in.
+	 */
 	constructor(client, data, room) {
 		super(client, data, room, 'UPDATE_USER');
 	}
 
-	/**
-	 * Execute the action
-	 */
 	run() {
 		this.removeMessageName();
 		const data = this.data.slice(1).split('|');

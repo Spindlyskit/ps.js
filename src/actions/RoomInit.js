@@ -1,18 +1,17 @@
 const Action = require('./Action');
 const { Events } = require('../util/Static');
 
-/**
- * Action for the room initialize message.
- * @extends {Action}
- */
 class ActionRoomInit extends Action {
+	/**
+	 * @hideconstructor
+	 * @param {Client} client The client that instantiated this action.
+	 * @param {string} data The data from the server.
+	 * @param {?Room} room The room the action was performed in.
+	 */
 	constructor(client, data, room) {
 		super(client, data, room, 'ROOM_INIT');
 	}
 
-	/**
-	 * Execute the action
-	 */
 	run() {
 		this.removeMessageName();
 		const roomType = this.data.slice(1);

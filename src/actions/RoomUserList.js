@@ -2,11 +2,13 @@ const Action = require('./Action');
 const { Events } = require('../util/Static');
 const User = require('../classes/User');
 
-/**
- * Action for the room users message.
- * @extends {Action}
- */
 class ActionRoomUserList extends Action {
+	/**
+	 * @hideconstructor
+	 * @param {Client} client The client that instantiated this action.
+	 * @param {string} data The data from the server.
+	 * @param {?Room} room The room the action was performed in.
+	 */
 	constructor(client, data, room) {
 		super(client, data, room, 'ROOM_USER_LIST');
 	}

@@ -1,6 +1,9 @@
 const Collection = require('../util/Collection');
 
 class ActionManager {
+	/**
+	 * @hideconstructor
+	 */
 	constructor() {
 		this.actions = new Collection();
 		this.register(require('./RoomInit'), 'init');
