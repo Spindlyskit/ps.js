@@ -1,6 +1,6 @@
+const User = require('../classes/User');
 const { toId } = require('../util');
 const DataStore = require('./DataStore');
-const User = require('../classes/User');
 
 class UserStore extends DataStore {
 	constructor(client, iterable) {

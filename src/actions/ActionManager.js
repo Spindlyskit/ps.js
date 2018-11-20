@@ -6,13 +6,17 @@ class ActionManager {
 	 */
 	constructor() {
 		this.actions = new Collection();
+		this.aliases = {};
 		this.register(require('./RoomInit'), 'init');
 		this.register(require('./RoomTitle'), 'title');
 		this.register(require('./RoomUserList'), 'users');
 		this.register(require('./Challstr'), 'challstr');
+		this.register(require('./Chat'), 'chat', 'c', 'c:');
 		this.register(require('./UpdateUser'), 'updateuser');
+		this.register(require('./UserRename'), 'name', 'n', 'N');
+		this.register(require('./UserJoin'), 'join', 'j', 'J');
+		this.register(require('./UserLeave'), 'leave', 'l', 'L');
 		this.default = require('./Action');
-		this.aliases = {};
 	}
 
 	get(action) {

@@ -7,6 +7,8 @@
  * @property {boolean} [autoFetchRooms=true] Whether to automatically retrieve the names of all rooms on the server
  * and store them as uninitialized rooms.
  * @property {string} [lobby=lobby] The default room on the server
+ * @property {number} [maxMessages=50] The max amount of chat messages stored in a room before old messages are deleted.
+ * 0 for unlimited.
  * @property {WebsocketOptions} [ws] Options for the websocket.
  * @property {HTTPOptions} [http] Options for http requests.
  */
@@ -16,6 +18,7 @@ exports.DefaultOptions = {
 	autoJoinRooms: [],
 	autoFetchRooms: true,
 	lobby: 'lobby',
+	maxMessages: 50,
 	/**
 	 * WebSocket options.
 	 * @typedef {Object} WebsocketOptions
@@ -163,16 +166,20 @@ exports.Events = {
 	RAW: 'raw',
 	ACTIONRUN: 'actionRun',
 
+	CHAT: 'chat',
+
 	CLIENT_USERNAME_CHANGE: 'clientUsernameChange',
 	CLIENT_AVATAR_CHANGE: 'clientAvatarChange',
 
 	ROOM_INIT: 'roomInit',
 	ROOM_TITLE: 'roomTitle',
 	ROOM_USER_UPDATE: 'roomUserUpdate',
-	ROOM_USER_JOIN: 'roomUserJoin',
-	ROOM_USER_LEAVE: 'roomUserLeave',
 	ROOM_DEINIT: 'roomDeinit',
 	ROOM_LOG_TEXT: 'roomLogMessage',
+
+	USER_RENAME: 'userRename',
+	USER_JOIN: 'userJoin',
+	USER_LEAVE: 'userLeave',
 
 	MESSAGE_SEND: 'message',
 	DM_RECEIVED: 'dmReceived',

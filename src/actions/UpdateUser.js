@@ -47,6 +47,10 @@ class ActionUpdateUser extends Action {
 
 		this.resolve(Events.CLIENT_AVATAR_CHANGE, { avatar });
 	}
+
+	static isRoomless() {
+		return true;
+	}
 }
 
 module.exports = ActionUpdateUser;

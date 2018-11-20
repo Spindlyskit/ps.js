@@ -15,7 +15,7 @@ class ActionRoomTitle extends Action {
 	run() {
 		this.removeMessageName();
 		const roomName = this.data.slice(1);
-		this.room.title = roomName;
+		this.room.name = roomName;
 		this.resolve(Events.ROOM_TITLE, { room: this.room, roomTitle: roomName });
 	}
 }

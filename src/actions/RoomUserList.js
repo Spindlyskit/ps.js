@@ -1,6 +1,5 @@
 const Action = require('./Action');
 const { Events } = require('../util/Static');
-const User = require('../classes/User');
 
 class ActionRoomUserList extends Action {
 	/**
@@ -21,7 +20,7 @@ class ActionRoomUserList extends Action {
 		const userlistRAW = this.data.slice(1);
 		const userlist = userlistRAW.split(',').splice(1);
 		for (const nameString of userlist) {
-			const user = new User(this.client, { nameString });
+			const user = this.client.users.getOrAdd(nameString);
 			user.addRoom(this.room.id);
 			this.client.users.set(user.id, user);
 		}

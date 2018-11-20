@@ -1,5 +1,3 @@
-const UserStore = require('../datastores/UserStore');
-
 /**
  * Represents any room on showdown
  */
@@ -37,6 +35,8 @@ class Room {
 		 */
 		this.initialized = false;
 
+		this.messages = new Set();
+
 		/**
 		 * The type of the room, either:
 		 * * `chat` - a normal chat room
@@ -45,13 +45,6 @@ class Room {
 		 * @type {string}
 		 */
 		this.type = data.type ? data.type : 'unknown';
-
-		/**
-		 * All users in the room.
-		 * @type {?UserStore<string, User>}
-		 * @private
-		 */
-		this._usersCache = null;
 	}
 
 	/**
@@ -84,10 +77,12 @@ class Room {
 		this.initialized = true;
 	}
 
+	/**
+	 * All users in the room
+	 * @returns {?UserStore<string, User>}
+	 */
 	get users() {
-		if (this._usersCache) return this._usersCache;
-		this._usersCache = new UserStore(this.client, this.client.users.filter(e => e.isInRoom(this)));
-		return this._usersCache;
+		return this.client.users.filter(e => e.isInRoom(this));
 	}
 
 	/**

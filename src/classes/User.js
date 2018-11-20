@@ -67,11 +67,26 @@ class User {
 		this.id = toId(this.name);
 	}
 
+	/**
+	 * Add a room to the users roomlist by id.
+	 * @param {string} roomId The id of the room.
+	 */
 	addRoom(roomId) {
 		if (this._rooms.has(roomId)) return;
 		if (!this.client.rooms.has(roomId)) this.client.rooms.getOrAdd(roomId);
 		this._roomCache = null;
 		this._rooms.add(roomId);
+	}
+
+	/**
+	 * Remove a room from the users roomlist by id.
+	 * @param {string} roomId The id of the room.
+	 */
+	removeRoom(roomId) {
+		if (!this._rooms.has(roomId)) return;
+		if (!this.client.rooms.has(roomId)) this.client.rooms.getOrAdd(roomId);
+		this._roomCache = null;
+		this._rooms.delete(roomId);
 	}
 
 	/**
