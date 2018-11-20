@@ -8,7 +8,7 @@
     "test": "npm run lint & npm run lint:typings",
     "start": "node ./test/index",
     "docgen": "node ./docgen",
-	"docgen:serve": "node ./docgen & docma serve docs",
+    "docgen:serve": "node ./docgen & docma serve docs",
     "lint": "./node_modules/.bin/eslint src",
     "lint:fix": "./node_modules/.bin/eslint --fix src",
     "lint:typings": "./node_modules/.bin/tslint typings/index.d.ts"
