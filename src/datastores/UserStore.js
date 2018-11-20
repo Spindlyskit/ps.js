@@ -33,7 +33,9 @@ class UserStore extends DataStore {
 	 */
 	getOrAdd(nameString) {
 		if (this.has(toId(nameString))) {
-			return this.get(toId(nameString));
+			const user = this.get(toId(nameString));
+			user.fromNameString(nameString);
+			return user;
 		} else {
 			const newUser = new User(this.client, { nameString });
 			this.set(toId(nameString), newUser);

@@ -28,7 +28,7 @@ class User {
 		 */
 		this._roomCache = null;
 
-		if (data.nameString) return this._fromNameString(data.nameString);
+		if (data.nameString) return this.fromNameString(data.nameString);
 
 		/**
 		 * The unique ID of the user
@@ -59,9 +59,8 @@ class User {
 	/**
 	 * Sets the users properties from a string in the format of {ranksymbol}{name} (commonly sent from the server)
 	 * @param {string} nameString The data string from the server
-	 * @private
 	 */
-	_fromNameString(nameString) {
+	fromNameString(nameString) {
 		this.rank = this.client.ranks.find(e => e.symbol === nameString.charAt(0));
 		this.name = nameString.substr(1);
 		this.id = toId(this.name);
@@ -107,6 +106,14 @@ class User {
 		if (this._roomCache) return this._roomCache;
 		this._roomCache = new RoomStore(this.client, this.client.rooms.filter(e => this._rooms.has(e.id)));
 		return this._roomCache;
+	}
+
+	/**
+	 * The users rank symbol and username
+	 * @returns {string}
+	 */
+	get nameString() {
+		return `${this.rank ? this.rank.symbol : ' '}${this.name || this.id}`;
 	}
 }
 

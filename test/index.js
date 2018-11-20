@@ -9,7 +9,6 @@ const client = new Showdown.Client({
 
 client.on('ready', () => {
 	console.log(`ps.js ${Showdown.version}: Client connected successfully`);
-	client.rooms.tryJoin('lobby');
 });
 
 client.on('challstr', () => {
@@ -32,7 +31,10 @@ client.on('userLeave', (user, room, disp) => {
 });
 
 client.on('chat', (message, room) => {
-	console.log(`${room.name}@${message.timestamp ? message.timestamp : 'unknown'} > ${message.author.name || message.author.id}: ${message.content}`);
+	console.log(`${room.name}@${message.timestamp ? message.timestamp : 'unknown'} >${message.author.nameString}: ${message.content}`);
+	if (!message.isInit && Showdown.toId(message.content) === 'hey') {
+		room.send(`Hey ${message.author.name}!`);
+	}
 });
 
 client.on('warn', console.warn);
@@ -47,6 +49,7 @@ client.on('roomInit', (room) => {
 
 client.on('clientUsernameChange', (user, loggedIn) => {
 	if (!loggedIn) return;
+	client.rooms.tryJoin('groupchat-spindlyskit-17308913');
 	console.log(`Logged in as ${user.name}!`);
 });
 

@@ -6,9 +6,10 @@ class Action {
 	 * @param {Client} client The client that instantiated this action.
 	 * @param {string} data The data from the server.
 	 * @param {?Room} room The room the action was performed in.
+	 * @param {boolean} initMessage Whether the action is part of an init message.
 	 * @param {string} name The action's name.
 	 */
-	constructor(client, data, room, name) {
+	constructor(client, data, room, initMessage, name) {
 		/**
 		 * The client that instantiated this action.
 		 * @type {Client}
@@ -29,6 +30,11 @@ class Action {
 		 * @type {string}
 		 */
 		this.name = name;
+		/**
+		 * Whether the action is part of an init message.
+		 * @type {boolean}
+		 */
+		this.isInit = initMessage;
 
 		/**
 		 * @typedef {Object} ActionResult

@@ -8,6 +8,9 @@ module.exports = {
 	// Utility Classes
 	Collection: require('./util/Collection'),
 
+	// Utility Methods
+	toId: require('./util').toId,
+
 	// Metadata
 	version: require('../package.json').version,
 };

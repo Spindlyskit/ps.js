@@ -7,9 +7,10 @@ class ActionRoomTitle extends Action {
 	 * @param {Client} client The client that instantiated this action.
 	 * @param {string} data The data from the server.
 	 * @param {?Room} room The room the action was performed in.
+	 * @param {boolean} initMessage Whether the action is part of an init message.
 	 */
-	constructor(client, data, room) {
-		super(client, data, room, 'ROOM_TITLE');
+	constructor(client, data, room, initMessage) {
+		super(client, data, room, initMessage, 'ROOM_TITLE');
 	}
 
 	run() {

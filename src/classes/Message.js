@@ -26,6 +26,12 @@ class Message {
 		this.room = data.room;
 
 		/**
+		 * Whether the message is part of a room init message.
+		 * @type {Room}
+		 */
+		this.isInit = data.isInit;
+
+		/**
 		 * The message timestamp, if the server sent one.
 		 * @type {?timestamp}
 		 */
