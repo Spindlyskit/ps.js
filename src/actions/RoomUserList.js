@@ -33,7 +33,7 @@ module.exports = ActionRoomUserList;
 
 /**
  * Emitted when a room userlist becomes available.
- * <warn>Not emitted on user join or leave. See {@link client#roomUserJoin} and {@link client#roomUserLeave}
+ * <warn>Not emitted on user join or leave. See {@link Client#userJoin} and {@link Client#userLeave}
  * @event Client#roomUserUpdate
  * @param {Room} room The Room.
  * @param {UserStore} users The new userlist.
