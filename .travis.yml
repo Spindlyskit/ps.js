@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+- 8
+- 9
+- 10
+install: npm install
+script: bash ./travis/test.sh
+jobs:
+  include:
+  - stage: deploy
+    node_js: 9
+    script: bash ./travis/deploy.sh
+    env:
+     - ENCRYPTION_LABEL="582953d545aa"
+cache:
+  directories:
+  - node_modules
