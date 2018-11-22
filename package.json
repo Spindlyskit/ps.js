@@ -9,9 +9,9 @@
     "start": "node ./test/index",
     "docgen": "node ./docgen",
     "docgen:serve": "node ./docgen & docma serve docs",
-    "lint": "./node_modules/.bin/eslint src",
-    "lint:fix": "./node_modules/.bin/eslint --fix src",
-    "lint:typings": "./node_modules/.bin/tslint typings/index.d.ts"
+    "lint": "eslint src *.js",
+    "lint:fix": "eslint --fix src",
+    "lint:typings": "tslint typings/index.d.ts"
   },
   "repository": {
     "type": "git",

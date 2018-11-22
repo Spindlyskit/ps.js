@@ -53,7 +53,6 @@ class Room {
 	 */
 	send(message) {
 		if (!this.initialized) this.client.emit('warn', `Cannot message ${this.id} - not in room`);
-		console.log(`${this.id}|${message}`);
 		this.ws.send(`${this.id}|${message}`);
 	}
 
