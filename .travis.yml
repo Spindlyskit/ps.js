@@ -11,7 +11,7 @@ jobs:
     node_js: 9
     script: bash ./travis/deploy.sh
     env:
-     - ENCRYPTION_LABEL="582953d545aa"
+     - ENCRYPTION_LABEL="da529dbea3cc"
 cache:
   directories:
   - node_modules
