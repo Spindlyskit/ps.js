@@ -37,16 +37,21 @@ SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
 # Decrypt and add the ssh key
+echo "Decrypting key"
 openssl aes-256-cbc -K $encrypted_26b4962af0e7_key -iv $encrypted_26b4962af0e7_iv
   -in travis/deploy-key.enc -out deploy-key -d
+echo "Adding key"
 eval "$(ssh-agent -s)"
+ehco "SSH Agent started"
 ssh-add deploy_key
+echo "Key added to agent"
 
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="gh-pages"
 git clone $REPO out -b $TARGET_BRANCH
 
 # Commit and push
+echo "Pushing"
 cd docs
 git add .
 git config user.name "Travis CI"
@@ -57,3 +62,5 @@ git push $SSH_REPO $TARGET_BRANCH
 # Clean up...
 cd ..
 rm -rf out
+
+echo "complete"
