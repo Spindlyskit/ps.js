@@ -37,6 +37,8 @@ SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
 # Decrypt and add the ssh key
+openssl aes-256-cbc -K $encrypted_26b4962af0e7_key -iv $encrypted_26b4962af0e7_iv
+  -in travis/deploy-key.enc -out deploy-key -d
 eval "$(ssh-agent -s)"
 ssh-add deploy_key
 
