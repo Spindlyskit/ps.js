@@ -37,7 +37,8 @@ SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
 # Decrypt and add the ssh key
-ssh-add travis/deploy_key
+eval "$(ssh-agent -s)"
+ssh-add deploy_key
 
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="gh-pages"
