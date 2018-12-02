@@ -10,6 +10,8 @@ jobs:
   - stage: deploy
     node_js: 9
     script: bash ./travis/deploy.sh
+    env:
+      - ENCRYPTION_LABEL="26b4962af0e7"
 cache:
   directories:
   - node_modules

@@ -1,66 +1,65 @@
 #!/bin/bash
-set -e
+set -e # Exit with nonzero exit code if anything fails
 
-# For revert branches, do nothing
-if [[ "$TRAVIS_BRANCH" == revert-* ]] || [[ "$TRAVIS_BRANCH" == dependabot/* ]]; then
-  echo -e "\e[36m\e[1mBuild triggered for reversion branch \"${TRAVIS_BRANCH}\" - doing nothing."
-  exit 0
+SOURCE_BRANCH="master"
+TARGET_BRANCH="gh-pages"
+
+function doCompile {
+  npm run docgen
+}
+
+# Pull requests and commits to other branches shouldn't try to deploy, just build to verify
+if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
+    echo "Skipping deploy; just doing a build."
+    doCompile
+    exit 0
 fi
 
-DONT_COMMIT=false
-
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - not commiting"
-  SOURCE_TYPE="pr"
-  DONT_COMMIT=true
-elif [ -n "$TRAVIS_TAG" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for tag \"${TRAVIS_TAG}\"."
-  SOURCE=$TRAVIS_TAG
-  SOURCE_TYPE="tag"
-else
-  echo -e "\e[36m\e[1mBuild triggered for branch \"${TRAVIS_BRANCH}\"."
-  SOURCE=$TRAVIS_BRANCH
-  SOURCE_TYPE="branch"
-fi
-
-# Run the build
-npm run docgen
-
-if [ $DONT_COMMIT == true ]; then
-  echo -e "\e[36m\e[1mNot commiting - exiting early"
-  exit 0
-fi
-
-# Initialise some useful variables
+# Save some useful information
 REPO=`git config remote.origin.url`
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
-# Decrypt and add the ssh key
-echo "Decrypting key"
-openssl aes-256-cbc -K $encrypted_26b4962af0e7_key -iv $encrypted_26b4962af0e7_iv
-  -in travis/deploy-key.enc -out deploy-key -d
-echo "Adding key"
-eval "$(ssh-agent -s)"
-ehco "SSH Agent started"
-ssh-add deploy_key
-echo "Key added to agent"
+# Clone the existing gh-pages for this repo into out/
+# Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deply)
+git clone $REPO out
+cd out
+git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
+cd ..
 
-# Checkout the repo in the target branch so we can build docs and push to it
-TARGET_BRANCH="gh-pages"
-git clone $REPO out -b $TARGET_BRANCH
+# Clean out existing contents
+rm -rf out/**/* || exit 0
 
-# Commit and push
-echo "Pushing"
+# Run our compile script
+doCompile
+
+# Now let's go have some fun with the cloned repo
 cd docs
-git add .
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
-git commit -m "Docs build for ${SOURCE_TYPE} ${SOURCE}: ${SHA}" || true
+
+# If there are no changes to the compiled out (e.g. this is a README update) then just bail.
+if git diff --quiet; then
+    echo "No changes to the output on this push; exiting."
+    exit 0
+fi
+
+# Commit the "changes", i.e. the new version.
+# The delta will show diffs between new and old versions.
+git add -A .
+git commit -m "Deploy to GitHub Pages: ${SHA}"
+
+# Get the deploy key by using Travis's stored variables to decrypt deploy_key.enc
+echo "Decrypting key"
+ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
+ENCRYPTED_IV_VAR="encrypted_${ENCRYPTION_LABEL}_iv"
+ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
+ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
+openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in ../travis/deploy_key.enc -out ../deploy_key -d
+echo "Done decrypt"
+chmod 600 ../deploy_key
+eval `ssh-agent -s`
+ssh-add ../deploy_key
+
+# Now that we're all set up, we can push.
 git push $SSH_REPO $TARGET_BRANCH
-
-# Clean up...
-cd ..
-rm -rf out
-
-echo "complete"
