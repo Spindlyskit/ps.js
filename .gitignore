@@ -16,4 +16,4 @@ docs/
 .vscode/
 
 # Misc
-travis/deploy_key
+travis/deploy-key
