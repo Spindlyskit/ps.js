@@ -1,3 +1,0 @@
-git add docs -f
-git commit -m "Update Docs"
-git add docs -f && git commit -m "Add CNAME"

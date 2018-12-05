@@ -116,7 +116,10 @@ class Client extends BaseClient {
 	 * Login with the username and password provided. Requires the client to have a challstr so if the challstr has not
 	 * been received yet the client will wait for it before logging in.
 	 * @param {string} username The username for the user.
-	 * @param {password} password The password for the user.
+	 * @param {string} password The users password.
+	 * @example
+	 * // Logs in as example user
+	 * client.login('example', 'password123);
 	 */
 	login(username, password) {
 		if (this.challstr) {
