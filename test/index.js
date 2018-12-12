@@ -1,4 +1,5 @@
 const Showdown = require('../src');
+const { username, password } = require('./auth.secret');
 
 const client = new Showdown.Client({
 	autoJoinRooms: ['lobby'],
@@ -13,21 +14,7 @@ client.on('ready', () => {
 
 client.on('challstr', () => {
 	console.log('client login ready');
-	client.login('eqobot', 'test123');
-});
-
-// client.on('raw', console.log);
-
-client.on('userRename', (user, newName, oldName) => {
-	console.log(`Rename ${oldName} > ${newName}`);
-});
-
-client.on('userJoin', (user, room, disp) => {
-	if (disp) console.log(`Join ${user.name || user.id} > ${room.name}`);
-});
-
-client.on('userLeave', (user, room, disp) => {
-	if (disp) console.log(`Leave ${user.name || user.id} > ${room.name}`);
+	client.login(username, password);
 });
 
 client.on('chat', (message, room) => {
@@ -49,7 +36,7 @@ client.on('roomInit', (room) => {
 
 client.on('clientUsernameChange', (user, loggedIn) => {
 	if (!loggedIn) return;
-	client.rooms.tryJoin('groupchat-spindlyskit-17308913');
+	client.rooms.tryJoin('lobby');
 	console.log(`Logged in as ${user.name}!`);
 });
 

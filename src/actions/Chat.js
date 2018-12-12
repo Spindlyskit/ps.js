@@ -10,11 +10,11 @@ class ActionChat extends Action {
 	 * @param {?Room} room The room the action was performed in.
 	 * @param {boolean} initMessage Whether the action is part of an init message.
 	 */
-	constructor(client, data, room, initMessage) {
-		super(client, data, room, initMessage, 'CHAT');
+	constructor(client, data, room) {
+		super(client, data, room, 'CHAT');
 	}
 
-	run() {
+	run(actions) {
 		const room = this.room;
 		const hasTimestamp = this.removeMessageName() === 'c:' ? 1 : 0;
 		const messageData = this.data.slice(1).split('|');
@@ -23,14 +23,17 @@ class ActionChat extends Action {
 		const user = this.client.users.getOrAdd(messageData[hasTimestamp]);
 		const content = messageData[hasTimestamp + 1];
 
-		const message = new Message(this.client, { user, timestamp, content, room, isInit: this.isInit });
+		const isInit = !!actions.find(action => action.name === 'ROOM_INIT');
+
+		const message = new Message(this.client, { user, timestamp, content, room, isInit });
 
 		this.room.messages.add(message);
 		if (room.messages.size !== 0 && room.messages.size === this.client.options.maxMessages) {
 			room.messages.delete(room.messages.values().next());
 		}
 
-		this.resolve(Events.CHAT, { message, room: this.room });
+		if (!isInit) this.resolve(Events.CHAT, { message, room: this.room });
+		else this.silentResolve(Events.CHAT, { message, room: this.room });
 	}
 }
 

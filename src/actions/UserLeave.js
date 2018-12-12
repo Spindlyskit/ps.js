@@ -9,8 +9,8 @@ class ActionUserLeave extends Action {
 	 * @param {?Room} room The room the action was performed in.
 	 * @param {boolean} initMessage Whether the action is part of an init message.
 	 */
-	constructor(client, data, room, initMessage) {
-		super(client, data, room, initMessage, 'USER_LEAVE');
+	constructor(client, data, room) {
+		super(client, data, room, 'USER_LEAVE');
 	}
 
 	/**

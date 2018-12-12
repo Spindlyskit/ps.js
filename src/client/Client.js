@@ -119,7 +119,7 @@ class Client extends BaseClient {
 	 * @param {string} password The users password.
 	 * @example
 	 * // Logs in as example user
-	 * client.login('example', 'password123);
+	 * client.login('example', 'password123');
 	 */
 	login(username, password) {
 		if (this.challstr) {

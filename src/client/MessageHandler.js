@@ -39,20 +39,23 @@ class MessageHandler {
 		if (actions[0].startsWith('>')) room = this.parseRoomLine(actions.shift());
 		else room = this.client.rooms.lobby;
 
-		let initMessage = false;
+		const resolvedActions = [];
 
 		for (const act of actions) {
 			if (!act.startsWith('|') || act.startsWith('||')) {
 				this.client.emit(Events.ROOM_LOG_TEXT, room, act);
 			} else {
-				if (act.startsWith('|init')) initMessage = true;
-				const action = this.parseAct(act, room, initMessage);
-				action.run();
-
-				this.client.emit(Events.ACTIONRUN, action);
-				this.collectors.forEach(e => e(action));
+				const action = this.parseAct(act, room);
+				resolvedActions.push(action);
 			}
 		}
+
+		resolvedActions.forEach(action => {
+			action.run(resolvedActions);
+
+			this.client.emit(Events.ACTIONRUN, action);
+			this.collectors.forEach(e => e(action));
+		});
 	}
 
 	/**
@@ -74,16 +77,15 @@ class MessageHandler {
 	 * Parse a normal action line from the message body.
 	 * @param {string} act The action line to parse.
 	 * @param {Room} room The room the action was executed in.
-	 * @param {boolean} initMessage Whether the action is part of an init message.
 	 * @returns {Action} The resulting action
 	 */
-	parseAct(act, room, initMessage) {
+	parseAct(act, room) {
 		const actionName = act.split('|')[1];
 
 		let Action;
 		if (actionManager.has(actionName)) Action = actionManager.get(actionName);
 		else Action = actionManager.default;
-		return new Action(this.client, act, Action.isRoomless ? null : room, initMessage);
+		return new Action(this.client, act, Action.isRoomless ? null : room);
 	}
 
 	/**

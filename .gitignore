@@ -17,3 +17,4 @@ docs/
 
 # Misc
 travis/deploy-key
+*.secret.js
