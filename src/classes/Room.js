@@ -1,3 +1,6 @@
+const { toId } = require('../util');
+const { Events } = require('../util/Static');
+
 /**
  * Represents any room on showdown
  */
@@ -50,9 +53,34 @@ class Room {
 	/**
 	 * Send a message to the room
 	 * @param {string} message The text to send
+	 * @returns {Promise<Message>} The message that was sent
 	 */
 	send(message) {
 		if (!this.initialized) this.client.emit('warn', `Cannot message ${this.id} - not in room`);
+
+		return new Promise((resolve, reject) => {
+			if (message.startsWith('/') && !message.startsWith('//')) {
+				reject(new Error(`Commands should be sent with sendraw - not sending ${message}`));
+			}
+
+			const filterResults = e => e.event === Events.CHAT &&
+				e.args.message.author === this.client.user &&
+				toId(e.args.message.content) === toId(message);
+
+			this.client.messageHandler.awaitActions({
+				filter: act => act.name === 'CHAT' && !!act.results.find(filterResults),
+			}).then(c => {
+				const action = c[0];
+				resolve(action.results.pop().args.message);
+			}).catch(reject);
+
+			this.ws.send(`${this.id}|${message}`);
+		});
+	}
+
+	sendRaw(message) {
+		if (!this.initialized) this.client.emit('warn', `Cannot message ${this.id} - not in room`);
+
 		this.ws.send(`${this.id}|${message}`);
 	}
 
