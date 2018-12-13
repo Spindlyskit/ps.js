@@ -14,7 +14,8 @@ client.on('ready', () => {
 
 client.on('challstr', () => {
 	console.log('client login ready');
-	client.login(username, password);
+	client.login(username, password)
+		.then(user => console.log(`Logged in as ${user.name}`));
 });
 
 client.on('chat', (message, room) => {
@@ -32,12 +33,6 @@ client.on('disconnect', () => {
 
 client.on('roomInit', (room) => {
 	console.log(`${room.id} initialized`);
-});
-
-client.on('clientUsernameChange', (user, loggedIn) => {
-	if (!loggedIn) return;
-	client.rooms.tryJoin('lobby');
-	console.log(`Logged in as ${user.name}!`);
 });
 
 client.on('clientAvatarChange', (avatar) => {

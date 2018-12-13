@@ -89,6 +89,11 @@ class Action {
 		});
 	}
 
+	/**
+	 * Resolve the action without emitting an event.
+	 * @param {string} event The name of the event.
+	 * @param {Object} args The event arguments.
+	 */
 	silentResolve(event, args) {
 		event += '_SILENT';
 		this.results.push({

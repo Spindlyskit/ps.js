@@ -4,6 +4,7 @@ const SocketHandler = require('./ws/SocketHandler');
 const MessageHandler = require('./MessageHandler');
 const RoomStore = require('../datastores/RoomStore');
 const UserStore = require('../datastores/UserStore');
+const { toId } = require('../util');
 const { defaultRanks, Events } = require('../util/Static');
 
 /**
@@ -117,11 +118,32 @@ class Client extends BaseClient {
 	 * been received yet the client will wait for it before logging in.
 	 * @param {string} username The username for the user.
 	 * @param {string} password The users password.
+	 * @returns {Promise<User>} The client's new user object
 	 * @example
 	 * // Logs in as example user
-	 * client.login('example', 'password123');
+	 * client.login('example', 'password123')
+	 * 	.then(user => console.log(`Logged in as ${user.name}`)
+	 * 	.catch(console.error);
 	 */
 	login(username, password) {
+		return new Promise((resolve, reject) => {
+			this._sendLogin(username, password);
+
+			const matchResults = res => res.args.user.id === toId(username) &&
+				res.event === Events.CLIENT_USERNAME_CHANGE &&
+				res.args.loggedIn;
+
+			this.messageHandler.awaitActions({
+				filter: act => act.name === 'UPDATE_USER' && !!act.results.find(matchResults),
+			}).then(c => {
+				const collected = c[0];
+				const args = collected.results.find(matchResults).args;
+				resolve(args.user);
+			}).catch(reject);
+		});
+	}
+
+	_sendLogin(username, password) {
 		if (this.challstr) {
 			request.post(`http${this.options.http.secure ? 's' : ''}://${this.options.loginServer}`, {
 				form: {
