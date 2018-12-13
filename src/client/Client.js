@@ -66,6 +66,14 @@ class Client extends BaseClient {
 		 * @type {?string}
 		 */
 		this.challstr = null;
+
+
+		/**
+		 * Whether the client has completed one-time post login actions
+		 * @type {boolean}
+		 * @private
+		 */
+		this._doneLoginSetup = false;
 	}
 
 	/**
@@ -138,6 +146,7 @@ class Client extends BaseClient {
 			}).then(c => {
 				const collected = c[0];
 				const args = collected.results.find(matchResults).args;
+				this._postLogin();
 				resolve(args.user);
 			}).catch(reject);
 		});
@@ -172,6 +181,16 @@ class Client extends BaseClient {
 				this.login(username, password);
 			});
 		}
+	}
+
+	/**
+	 * Run when the client has logged in.
+	 */
+	_postLogin() {
+		if (this._doneLoginSetup) return;
+		this._doneLoginSetup = true;
+
+		this.options.autoJoinRooms.forEach(e => this.rooms.tryJoin(e));
 	}
 
 	/**
